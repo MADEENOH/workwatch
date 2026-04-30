@@ -3,13 +3,23 @@ import { createRoot } from "react-dom/client";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-const ARCHETYPES = [
-  "Micromanager",
-  "Burnout Driver",
-  "Credit Stealer",
-  "Mentor",
-  "Career Accelerator",
-];
+const LEAFLET_ASSET_BASE = "https://unpkg.com/leaflet@1.9.4/dist/images/";
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: `${LEAFLET_ASSET_BASE}marker-icon-2x.png`,
+  iconUrl: `${LEAFLET_ASSET_BASE}marker-icon.png`,
+  shadowUrl: `${LEAFLET_ASSET_BASE}marker-shadow.png`,
+});
+
+const ARCHETYPE_DETAILS = {
+  Micromanager: "High control, low autonomy",
+  "Burnout Driver": "Unrealistic workload expectations",
+  "Credit Stealer": "Takes credit for team work",
+  Mentor: "Supports growth and development",
+  "Career Accelerator": "Actively promotes advancement",
+};
+
+const ARCHETYPES = Object.keys(ARCHETYPE_DETAILS);
 
 const KEYWORDS = {
   Micromanager: ["micromanage", "watching", "hover", "control", "nitpick", "approval", "every detail"],
@@ -94,6 +104,198 @@ const COMPANIES = [
   },
 ];
 
+const SAMPLE_REVIEWS = [
+  {
+    id: "sample-wf-charlotte-1",
+    branchId: "wf-charlotte",
+    role: "Operations Analyst",
+    text: "My supervisor reviews every small change and expects approvals before we can move work forward, which slows the team down.",
+    tags: ["Micromanager"],
+    verified: true,
+    createdAt: "Apr 12, 2026",
+    emailHash: "sample-verified-wf-charlotte-1",
+  },
+  {
+    id: "sample-wf-charlotte-2",
+    branchId: "wf-charlotte",
+    role: "Branch Associate",
+    text: "Weekend coverage became routine during quarter close, and the staffing plan never matched the workload.",
+    tags: ["Burnout Driver"],
+    verified: true,
+    createdAt: "Apr 8, 2026",
+    emailHash: "sample-verified-wf-charlotte-2",
+  },
+  {
+    id: "sample-wf-charlotte-3",
+    branchId: "wf-charlotte",
+    role: "Supervisor",
+    text: "There are a few helpful leads, but the dominant style is high pressure and constant status checking.",
+    tags: ["Micromanager", "Burnout Driver"],
+    verified: false,
+    createdAt: "Mar 29, 2026",
+    emailHash: "sample-unverified-wf-charlotte-3",
+  },
+  {
+    id: "sample-wf-san-francisco-1",
+    branchId: "wf-san-francisco",
+    role: "Relationship Manager",
+    text: "My manager created stretch assignments and gave useful feedback after client meetings.",
+    tags: ["Mentor", "Career Accelerator"],
+    verified: true,
+    createdAt: "Apr 11, 2026",
+    emailHash: "sample-verified-wf-sf-1",
+  },
+  {
+    id: "sample-wf-san-francisco-2",
+    branchId: "wf-san-francisco",
+    role: "Analyst",
+    text: "Leadership actively advocated for promotions and made sure junior staff had visibility with directors.",
+    tags: ["Career Accelerator"],
+    verified: true,
+    createdAt: "Apr 2, 2026",
+    emailHash: "sample-verified-wf-sf-2",
+  },
+  {
+    id: "sample-wf-san-francisco-3",
+    branchId: "wf-san-francisco",
+    role: "Operations Lead",
+    text: "The team has high standards, but coaching is patient and the feedback is usually specific enough to act on.",
+    tags: ["Mentor"],
+    verified: false,
+    createdAt: "Mar 25, 2026",
+    emailHash: "sample-unverified-wf-sf-3",
+  },
+  {
+    id: "sample-jpm-new-york-1",
+    branchId: "jpm-new-york",
+    role: "Associate",
+    text: "A senior manager used my client deck in a steering meeting and presented the strategy as their own.",
+    tags: ["Credit Stealer"],
+    verified: true,
+    createdAt: "Apr 14, 2026",
+    emailHash: "sample-verified-jpm-ny-1",
+  },
+  {
+    id: "sample-jpm-new-york-2",
+    branchId: "jpm-new-york",
+    role: "Analyst",
+    text: "The team gets strong exposure, but the workload spikes are unrealistic and late-night requests are normalized.",
+    tags: ["Burnout Driver", "Career Accelerator"],
+    verified: true,
+    createdAt: "Apr 6, 2026",
+    emailHash: "sample-verified-jpm-ny-2",
+  },
+  {
+    id: "sample-jpm-new-york-3",
+    branchId: "jpm-new-york",
+    role: "Manager",
+    text: "Recognition is inconsistent. People who prepare the analysis are not always credited when results are presented upward.",
+    tags: ["Credit Stealer"],
+    verified: false,
+    createdAt: "Mar 30, 2026",
+    emailHash: "sample-unverified-jpm-ny-3",
+  },
+  {
+    id: "sample-jpm-chicago-1",
+    branchId: "jpm-chicago",
+    role: "Client Service Associate",
+    text: "My manager is a steady mentor who gives direct feedback without making mistakes feel career limiting.",
+    tags: ["Mentor"],
+    verified: true,
+    createdAt: "Apr 10, 2026",
+    emailHash: "sample-verified-jpm-chicago-1",
+  },
+  {
+    id: "sample-jpm-chicago-2",
+    branchId: "jpm-chicago",
+    role: "Supervisor",
+    text: "The branch lead helped me prepare for a lateral move and introduced me to partners in another group.",
+    tags: ["Career Accelerator", "Mentor"],
+    verified: true,
+    createdAt: "Apr 4, 2026",
+    emailHash: "sample-verified-jpm-chicago-2",
+  },
+  {
+    id: "sample-jpm-chicago-3",
+    branchId: "jpm-chicago",
+    role: "Operations Analyst",
+    text: "There are busy periods, but managers usually adjust priorities and protect the team from unnecessary escalation.",
+    tags: ["Mentor"],
+    verified: false,
+    createdAt: "Mar 28, 2026",
+    emailHash: "sample-unverified-jpm-chicago-3",
+  },
+  {
+    id: "sample-amz-seattle-1",
+    branchId: "amz-seattle",
+    role: "Program Manager",
+    text: "The pace is intense, but my manager sponsored me for a high-visibility roadmap review and helped frame the promotion case.",
+    tags: ["Career Accelerator", "Burnout Driver"],
+    verified: true,
+    createdAt: "Apr 13, 2026",
+    emailHash: "sample-verified-amz-seattle-1",
+  },
+  {
+    id: "sample-amz-seattle-2",
+    branchId: "amz-seattle",
+    role: "Product Analyst",
+    text: "Managers expect fast turnarounds and weekly metrics deep dives, but the best leaders still coach through ambiguity.",
+    tags: ["Burnout Driver", "Mentor"],
+    verified: true,
+    createdAt: "Apr 3, 2026",
+    emailHash: "sample-verified-amz-seattle-2",
+  },
+  {
+    id: "sample-amz-seattle-3",
+    branchId: "amz-seattle",
+    role: "Engineering Manager",
+    text: "Strong performers get real advancement opportunities, though the workload can crowd out recovery time.",
+    tags: ["Career Accelerator", "Burnout Driver"],
+    verified: false,
+    createdAt: "Mar 27, 2026",
+    emailHash: "sample-unverified-amz-seattle-3",
+  },
+  {
+    id: "sample-amz-dallas-1",
+    branchId: "amz-dallas",
+    role: "Area Manager",
+    text: "Hourly targets changed with little warning, and managers pushed overtime instead of fixing process gaps.",
+    tags: ["Burnout Driver"],
+    verified: true,
+    createdAt: "Apr 9, 2026",
+    emailHash: "sample-verified-amz-dallas-1",
+  },
+  {
+    id: "sample-amz-dallas-2",
+    branchId: "amz-dallas",
+    role: "Operations Lead",
+    text: "My manager tracked every decision and reversed small calls after the fact, which made supervisors hesitant to act.",
+    tags: ["Micromanager"],
+    verified: true,
+    createdAt: "Apr 1, 2026",
+    emailHash: "sample-verified-amz-dallas-2",
+  },
+  {
+    id: "sample-amz-dallas-3",
+    branchId: "amz-dallas",
+    role: "Supervisor",
+    text: "The culture rewards speed, but burnout is high and autonomy is low during peak periods.",
+    tags: ["Burnout Driver", "Micromanager"],
+    verified: false,
+    createdAt: "Mar 24, 2026",
+    emailHash: "sample-unverified-amz-dallas-3",
+  },
+];
+
+function sampleEmailHash(index) {
+  return `${(index + 1).toString(16).padStart(2, "0")}${"a4f7c9e2b6d1038f".repeat(4)}`.slice(0, 64);
+}
+
+const SEEDED_REVIEWS = SAMPLE_REVIEWS.map((review, index) => ({
+  ...review,
+  emailHash: sampleEmailHash(index),
+}));
+
 const BRANCHES = COMPANIES.flatMap((company) =>
   company.branches.map((branch) => ({ ...branch, company }))
 );
@@ -123,48 +325,117 @@ function riskTone(score) {
   return "text-emerald-200 bg-emerald-500/10 border-emerald-300/30";
 }
 
+function riskLabel(score) {
+  if (score >= 75) return "High attention";
+  if (score >= 55) return "Watch list";
+  return "Stable";
+}
+
+function ArchetypeTag({ tag, subtle = false }) {
+  return (
+    <span className="group relative inline-flex">
+      <span
+        className={`rounded-md border px-2.5 py-1 text-xs font-semibold ${
+          subtle
+            ? "border-slate-700 bg-slate-800 text-slate-300"
+            : "border-slate-700 bg-slate-800 text-slate-100"
+        }`}
+        title={`${tag}: ${ARCHETYPE_DETAILS[tag]}`}
+      >
+        {tag}
+      </span>
+      <span className="pointer-events-none absolute bottom-full left-0 z-[1200] mb-2 hidden w-56 rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-xs font-medium leading-5 text-slate-200 shadow-xl group-hover:block group-focus-within:block">
+        <strong className="text-white">{tag}</strong>: {ARCHETYPE_DETAILS[tag]}
+      </span>
+    </span>
+  );
+}
+
+function createBranchIcon(branch, isSelected) {
+  const size = isSelected ? 34 : 26;
+  const ring = isSelected ? "ring-4 ring-white/25" : "ring-2 ring-slate-950/60";
+
+  return L.divIcon({
+    className: "",
+    html: `
+      <button
+        aria-label="${branch.company.name} ${branch.city}"
+        class="grid place-items-center rounded-full border-2 border-white shadow-xl ${ring}"
+        style="height:${size}px;width:${size}px;background:${branch.company.color}"
+      >
+        <span class="h-2 w-2 rounded-full bg-white"></span>
+      </button>
+    `,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+  });
+}
+
 function App() {
   const mapRef = useRef(null);
   const layerRef = useRef(null);
+  const resizeObserverRef = useRef(null);
   const [selectedBranch, setSelectedBranch] = useState(initialBranch);
   const [reviews, setReviews] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState({ text: "", role: "Supervisor", email: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const branchReviews = reviews.filter((review) => review.branchId === selectedBranch.id);
+  const allReviews = useMemo(() => [...reviews, ...SEEDED_REVIEWS], [reviews]);
+  const branchReviews = allReviews.filter((review) => review.branchId === selectedBranch.id);
   const cardTags = useMemo(() => {
     const reviewTags = branchReviews.flatMap((review) => review.tags);
     return [...new Set([...selectedBranch.tags, ...reviewTags])];
   }, [branchReviews, selectedBranch]);
 
   useEffect(() => {
-    if (!mapRef.current) {
-      mapRef.current = L.map("workwatch-map", {
-        zoomControl: false,
-        attributionControl: false,
-      }).setView([39.5, -98.35], 4);
+    const map = L.map("workwatch-map", {
+      zoomControl: false,
+      attributionControl: false,
+      scrollWheelZoom: true,
+    }).setView([39.5, -98.35], 4);
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 18,
-      }).addTo(mapRef.current);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      crossOrigin: true,
+    }).addTo(map);
 
-      L.control.zoom({ position: "bottomright" }).addTo(mapRef.current);
-      layerRef.current = L.layerGroup().addTo(mapRef.current);
+    L.control.zoom({ position: "bottomright" }).addTo(map);
+    layerRef.current = L.layerGroup().addTo(map);
+    mapRef.current = map;
+
+    const refreshMapSize = () => {
+      window.requestAnimationFrame(() => map.invalidateSize({ animate: true }));
+    };
+
+    const mapElement = document.getElementById("workwatch-map");
+    if (mapElement && "ResizeObserver" in window) {
+      resizeObserverRef.current = new ResizeObserver(refreshMapSize);
+      resizeObserverRef.current.observe(mapElement);
     }
+
+    refreshMapSize();
+    const initialResize = window.setTimeout(refreshMapSize, 250);
+    window.addEventListener("resize", refreshMapSize);
+
+    return () => {
+      window.clearTimeout(initialResize);
+      window.removeEventListener("resize", refreshMapSize);
+      resizeObserverRef.current?.disconnect();
+      map.remove();
+      mapRef.current = null;
+      layerRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!layerRef.current) return;
 
     layerRef.current.clearLayers();
     BRANCHES.forEach((branch) => {
       const isSelected = selectedBranch.id === branch.id;
-      const sizeClass = isSelected ? "h-9 w-9" : "h-7 w-7";
-      const icon = L.divIcon({
-        className: "",
-        html: `<button class="grid ${sizeClass} place-items-center rounded-full border-2 border-white shadow-lg" style="background:${branch.company.color}"><span class="h-2 w-2 rounded-full bg-white"></span></button>`,
-        iconSize: isSelected ? [36, 36] : [28, 28],
-        iconAnchor: isSelected ? [18, 18] : [14, 14],
-      });
 
-      L.marker(branch.coords, { icon })
+      L.marker(branch.coords, { icon: createBranchIcon(branch, isSelected), keyboard: true })
         .addTo(layerRef.current)
         .on("click", () => setSelectedBranch(branch))
         .bindTooltip(`${branch.company.name} · ${branch.city}`, {
@@ -176,8 +447,14 @@ function App() {
   }, [selectedBranch]);
 
   useEffect(() => {
-    setTimeout(() => mapRef.current?.invalidateSize(), 80);
-  }, []);
+    if (!mapRef.current) return;
+
+    mapRef.current.flyTo(selectedBranch.coords, 5, {
+      animate: true,
+      duration: 0.65,
+    });
+    window.setTimeout(() => mapRef.current?.invalidateSize({ animate: true }), 100);
+  }, [selectedBranch]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -211,8 +488,18 @@ function App() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100">
       <style>{`
-        #workwatch-map { background: #020617; }
-        .leaflet-container { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+        #workwatch-map {
+          min-height: 500px;
+          height: 100%;
+          width: 100%;
+          background: #020617;
+        }
+        .leaflet-container {
+          min-height: 500px;
+          height: 100%;
+          width: 100%;
+          font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        }
         .leaflet-tile { filter: saturate(.45) brightness(.72) contrast(1.12); }
         .leaflet-tooltip {
           border: 1px solid rgba(148, 163, 184, .28);
@@ -228,7 +515,7 @@ function App() {
         }
       `}</style>
 
-      <section className="grid min-h-screen grid-cols-1 lg:grid-cols-[380px_1fr]">
+      <section className="grid min-h-screen grid-cols-1 lg:grid-cols-[400px_minmax(0,1fr)]">
         <aside className="border-b border-slate-800 bg-slate-950/95 p-5 lg:border-b-0 lg:border-r">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -245,7 +532,7 @@ function App() {
           </div>
 
           <div className="mt-6 rounded-lg border border-slate-800 bg-slate-900/70 p-4">
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-sm text-slate-400">{selectedBranch.company.name}</p>
                 <h2 className="text-xl font-bold text-white">{selectedBranch.name}</h2>
@@ -258,12 +545,19 @@ function App() {
               >
                 <p className="text-xs font-medium uppercase tracking-wider">Risk</p>
                 <p className="text-2xl font-black">{selectedBranch.riskScore}</p>
+                <p className="mt-1 text-[11px] font-bold uppercase tracking-wide">
+                  {riskLabel(selectedBranch.riskScore)}
+                </p>
               </div>
             </div>
 
-            <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-800">
+            <p className="mt-4 text-xs leading-5 text-slate-400">
+              Calculated from review sentiment and manager archetypes
+            </p>
+
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-800">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-amber-300 to-rose-500"
+                className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-amber-300 to-rose-500 transition-all duration-700 ease-out"
                 style={{ width: `${selectedBranch.riskScore}%` }}
               />
             </div>
@@ -272,12 +566,7 @@ function App() {
               <p className="text-sm font-semibold text-slate-300">Manager Archetypes</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {cardTags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-md border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-100"
-                  >
-                    {tag}
-                  </span>
+                  <ArchetypeTag key={tag} tag={tag} />
                 ))}
               </div>
             </div>
@@ -298,45 +587,38 @@ function App() {
               </h3>
               <span className="text-sm text-slate-500">{branchReviews.length}</span>
             </div>
-            {branchReviews.length === 0 ? (
-              <div className="rounded-lg border border-dashed border-slate-700 p-4 text-sm text-slate-400">
-                No anonymous reviews yet for this branch.
-              </div>
-            ) : (
-              branchReviews.map((review) => (
-                <article
-                  key={review.id}
-                  className="rounded-lg border border-slate-800 bg-slate-900/55 p-4"
-                >
-                  <div className="flex items-center justify-between gap-3">
+
+            {branchReviews.map((review) => (
+              <article
+                key={review.id}
+                className="rounded-lg border border-slate-800 bg-slate-900/55 p-4"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div>
                     <p className="text-sm font-semibold text-white">{review.role}</p>
-                    {review.verified && (
-                      <span className="rounded-md border border-emerald-300/30 bg-emerald-400/10 px-2 py-1 text-xs font-bold text-emerald-200">
-                        Verified
-                      </span>
-                    )}
+                    <p className="text-xs text-slate-500">{review.createdAt}</p>
                   </div>
-                  <p className="mt-2 text-sm leading-6 text-slate-300">{review.text}</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {review.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-md bg-slate-800 px-2 py-1 text-xs text-slate-300"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="mt-3 truncate text-xs text-slate-500">
-                    SHA-256: {review.emailHash}
-                  </p>
-                </article>
-              ))
-            )}
+                  {review.verified && (
+                    <span className="rounded-md border border-emerald-300/30 bg-emerald-400/10 px-2 py-1 text-xs font-bold text-emerald-200">
+                      Verified
+                    </span>
+                  )}
+                </div>
+                <p className="mt-2 text-sm leading-6 text-slate-300">{review.text}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {review.tags.map((tag) => (
+                    <ArchetypeTag key={tag} tag={tag} subtle />
+                  ))}
+                </div>
+                <p className="mt-3 truncate text-xs text-slate-500">
+                  SHA-256: {review.emailHash}
+                </p>
+              </article>
+            ))}
           </div>
         </aside>
 
-        <section className="relative min-h-[620px]">
+        <section className="relative h-[540px] min-h-[500px] overflow-hidden lg:h-screen">
           <div id="workwatch-map" className="absolute inset-0" />
           <div className="pointer-events-none absolute left-4 top-4 rounded-lg border border-slate-700 bg-slate-950/85 p-3 shadow-2xl backdrop-blur">
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
