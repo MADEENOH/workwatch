@@ -1,4 +1,7 @@
-const { useEffect, useMemo, useRef, useState } = React;
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { createRoot } from "react-dom/client";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 const ARCHETYPES = [
   "Micromanager",
@@ -153,9 +156,10 @@ function App() {
     layerRef.current.clearLayers();
     BRANCHES.forEach((branch) => {
       const isSelected = selectedBranch.id === branch.id;
+      const sizeClass = isSelected ? "h-9 w-9" : "h-7 w-7";
       const icon = L.divIcon({
         className: "",
-        html: `<button class="grid h-${isSelected ? "9" : "7"} w-${isSelected ? "9" : "7"} place-items-center rounded-full border-2 border-white shadow-lg" style="background:${branch.company.color}"><span class="h-2 w-2 rounded-full bg-white"></span></button>`,
+        html: `<button class="grid ${sizeClass} place-items-center rounded-full border-2 border-white shadow-lg" style="background:${branch.company.color}"><span class="h-2 w-2 rounded-full bg-white"></span></button>`,
         iconSize: isSelected ? [36, 36] : [28, 28],
         iconAnchor: isSelected ? [18, 18] : [14, 14],
       });
@@ -435,4 +439,4 @@ function App() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+createRoot(document.getElementById("root")).render(<App />);
