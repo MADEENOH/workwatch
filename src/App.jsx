@@ -21,6 +21,9 @@ const ARCHETYPE_DETAILS = {
 
 const ARCHETYPES = Object.keys(ARCHETYPE_DETAILS);
 
+const US_CENTER = [39.8283, -98.5795];
+const US_DEFAULT_ZOOM = 4;
+
 const KEYWORDS = {
   Micromanager: ["micromanage", "watching", "hover", "control", "nitpick", "approval", "every detail"],
   "Burnout Driver": ["burnout", "overtime", "weekend", "exhausted", "unrealistic", "understaffed", "pressure"],
@@ -42,7 +45,7 @@ const COMPANIES = [
         city: "Charlotte, NC",
         coords: [35.2271, -80.8431],
         riskScore: 76,
-        tags: ["Micromanager", "Burnout Driver"],
+        tags: ["Micromanager", "Burnout Driver", "Mentor"],
       },
       {
         id: "wf-san-francisco",
@@ -326,7 +329,7 @@ function riskTone(score) {
 }
 
 function riskLabel(score) {
-  if (score >= 75) return "High attention";
+  if (score >= 75) return "High Risk Environment";
   if (score >= 55) return "Watch list";
   return "Stable";
 }
@@ -375,6 +378,7 @@ function App() {
   const mapRef = useRef(null);
   const layerRef = useRef(null);
   const resizeObserverRef = useRef(null);
+  const didSkipInitialFlyToRef = useRef(false);
   const [selectedBranch, setSelectedBranch] = useState(initialBranch);
   const [reviews, setReviews] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -393,7 +397,7 @@ function App() {
       zoomControl: false,
       attributionControl: false,
       scrollWheelZoom: true,
-    }).setView([39.5, -98.35], 4);
+    }).setView(US_CENTER, US_DEFAULT_ZOOM);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
@@ -448,6 +452,12 @@ function App() {
 
   useEffect(() => {
     if (!mapRef.current) return;
+    if (!didSkipInitialFlyToRef.current) {
+      didSkipInitialFlyToRef.current = true;
+      mapRef.current.setView(US_CENTER, US_DEFAULT_ZOOM);
+      window.setTimeout(() => mapRef.current?.invalidateSize({ animate: true }), 100);
+      return;
+    }
 
     mapRef.current.flyTo(selectedBranch.coords, 5, {
       animate: true,
